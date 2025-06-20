@@ -1,0 +1,48 @@
+{
+	"type": "multiSelect",
+	"id": "mandatory",
+	"label": "Mandatory methods",
+	"readonly": false,
+	"value": [
+		"email",
+		"phone"
+	],
+	"options": [
+		{
+			"type": "group",
+			"label": "Own methods",
+			"options": [
+				{
+					"type": "item",
+					"label": "Email address",
+					"value": "email"
+				},
+				{
+					"type": "item",
+					"label": "Phone number",
+					"value": "phone"
+				}
+			]
+		},
+		{
+			"type": "group",
+			"label": "Third party methods",
+			"options": [
+				{
+					"type": "item",
+					"label": "Email address 2",
+					"value": "email2"
+				},
+				{
+					"type": "item",
+					"label": "Phone number 2",
+					"value": "phone2"
+				}
+			]
+		}
+	],
+	"validator": {
+		"minSelectable": 2,
+		"maxSelectable": 2
+	}
+}

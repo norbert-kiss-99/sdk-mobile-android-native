@@ -1,0 +1,35 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+	alias(libs.plugins.android.application) apply false
+	id 'com.android.library' version '7.4.2' apply false
+
+	id 'com.diffplug.spotless' version '6.24.0'
+}
+
+spotless {
+	format 'misc', {
+		target '**/*.*'
+		targetExclude('**/*.webp', '**/*.jar', '.idea/**')
+		endWithNewline()
+	}
+	format 'xml', {
+		target '**/*.xml'
+		targetExclude('.idea/**')
+		eclipseWtp('xml')
+	}
+	groovyGradle {
+		target '**/*.gradle'
+		greclipse()
+	}
+	json {
+		target '**/*.json'
+		eclipseWtp('json')
+	}
+	java {
+		target '**/*.java'
+		toggleOffOn()
+		prettier(['prettier': '2.8.8', 'prettier-plugin-java': '1.6.2']).config(['parser': 'java', 'tabWidth': 4, 'printWidth': 120])
+		removeUnusedImports()
+		importOrder('\\#', 'android', 'androidx', 'com', 'org', 'net', '', 'java')
+	}
+}

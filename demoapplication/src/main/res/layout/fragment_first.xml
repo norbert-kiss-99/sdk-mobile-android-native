@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools" android:gravity="center"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent" android:orientation="vertical"
+	tools:context=".FirstFragment">
+
+	<ScrollView android:id="@+id/app_screen_layout_container"
+		android:visibility="gone" android:layout_height="match_parent"
+		android:layout_width="match_parent" android:layout_gravity="center"
+		android:gravity="center" android:orientation="vertical">
+
+		<LinearLayout android:id="@+id/app_screen_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:orientation="vertical"
+			android:paddingHorizontal="64dp" />
+
+	</ScrollView>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/app_layout" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:padding="16dp">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_login" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/login_button_text"
+			app:layout_constraintBottom_toTopOf="@id/textview_welcome"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_logout" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/logout_button_text"
+			app:layout_constraintBottom_toTopOf="@id/textview_welcome"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" android:visibility="gone" />
+
+		<TextView android:id="@+id/textview_welcome"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginTop="16dp"
+			android:textSize="30sp" android:textStyle="bold"
+			android:text="@string/loading_text"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/button_login" />
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

@@ -1,0 +1,72 @@
+{
+	"type": "select",
+	"id": "attributes.country",
+	"label": "Country",
+	"readonly": false,
+	"value": "FI",
+	"render": {
+		"type": "dropdown"
+	},
+	"options": [
+		{
+			"type": "group",
+			"label": "Europe",
+			"options": [
+				{
+					"type": "item",
+					"label": "Hungary",
+					"value": "HU"
+				},
+				{
+					"type": "item",
+					"label": "Finnland",
+					"value": "FI"
+				},
+				{
+					"type": "item",
+					"label": "England",
+					"value": "EN"
+				},
+				{
+					"type": "item",
+					"label": "Sweden",
+					"value": "SE"
+				},
+				{
+					"type": "item",
+					"label": "CZech",
+					"value": "CZK"
+				},
+				{
+					"type": "item",
+					"label": "French",
+					"value": "FR"
+				}
+			]
+		},
+		{
+			"type": "group",
+			"label": "USA",
+			"options": [
+				{
+					"type": "item",
+					"label": "Ecuador",
+					"value": "EQ"
+				},
+				{
+					"type": "item",
+					"label": "Mexico",
+					"value": "MX"
+				},
+				{
+					"type": "item",
+					"label": "Argentina",
+					"value": "ARG"
+				}
+			]
+		}
+	],
+	"validator": {
+		"required": true
+	}
+}

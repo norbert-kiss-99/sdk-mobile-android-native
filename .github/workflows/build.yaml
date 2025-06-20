@@ -1,0 +1,60 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches: [ 'main' ]
+    tags: [ 'v[0-9]+.[0-9]+.[0-9]+-[0-9]+' ]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Code style check
+        run: ./gradlew spotlessCheck
+
+      - name: Tests
+        id: test
+        run: ./gradlew test testReleaseUnitTest
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Gradle build
+        run: ./gradlew build
