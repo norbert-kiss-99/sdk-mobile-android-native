@@ -1,5 +1,6 @@
 package com.strivacity.android.demo;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +21,9 @@ import java.util.List;
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
-    MainActivity mainActivity;
-    NativeSDK nativeSDK;
-    FloatingActionButton cancelFlowButton;
+    private MainActivity mainActivity;
+    private NativeSDK nativeSDK;
+    private FloatingActionButton cancelFlowButton;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,6 +35,12 @@ public class FirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mainActivity = ((MainActivity) view.getContext());
         nativeSDK = mainActivity.nativeSDK;
+
+        binding.buttonLogout.setOnClickListener(v -> {
+            nativeSDK.logout();
+            showLoginScreen();
+        });
+
         binding.buttonLogin.setOnClickListener(v -> {
             binding.appLayout.setVisibility(View.GONE);
             binding.appScreenLayoutContainer.setVisibility(View.VISIBLE);
@@ -51,10 +58,19 @@ public class FirstFragment extends Fragment {
             );
         });
 
-        binding.buttonLogout.setOnClickListener(v -> {
-            nativeSDK.logout();
-            showLoginScreen();
-        });
+        if (
+            mainActivity != null &&
+            mainActivity.getIntent().getData() != null &&
+            mainActivity.getIntent().getData().toString().startsWith(MainActivity.ENTRY_URL)
+        ) {
+            binding.appLayout.setVisibility(View.GONE);
+            binding.appScreenLayoutContainer.setVisibility(View.VISIBLE);
+//            cancelFlowButton = mainActivity.findViewById(R.id.cancelFlowButton);
+//            cancelFlowButton.setVisibility(View.VISIBLE);
+
+            entry(mainActivity.getIntent().getData());
+            return;
+        }
 
         nativeSDK.isAuthenticated(authenticated -> {
             if (authenticated) {
@@ -65,7 +81,85 @@ public class FirstFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (nativeSDK.isFallback()) {
+            nativeSDK.cancelFlow();
+        }
+
+        Uri data = mainActivity.getIntent().getData();
+        if (data != null && data.toString().startsWith(MainActivity.ENTRY_URL) && !nativeSDK.isWorkflowInProgress()) {
+            binding.appLayout.setVisibility(View.GONE);
+            binding.appScreenLayoutContainer.setVisibility(View.VISIBLE);
+
+            entry(data);
+            return;
+        }
+
+        if (!nativeSDK.isWorkflowInProgress()) {
+            showLoginScreen();
+        }
+    }
+
+    private void entry(Uri uri) {
+        nativeSDK.entry(
+            uri,
+            binding.appScreenLayout,
+            this::showLoginScreen,
+            throwable -> {
+                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                showLoginScreen();
+            },
+            landingIdentifier -> {
+                switch (landingIdentifier) {
+                    case MAGIC_LINK_EXPIRED:
+                        {
+                            Toast.makeText(getContext(), "Your link has expired", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                    case CLIENT_MISMATCH:
+                        {
+                            Toast
+                                .makeText(
+                                    getContext(),
+                                    "An unexpected error occurred, please try again (001)",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show();
+                            break;
+                        }
+                    case INVALID_REDIRECT_URI:
+                        {
+                            Toast
+                                .makeText(
+                                    getContext(),
+                                    "An unexpected error occurred, please try again (002)",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show();
+                            break;
+                        }
+                    default:
+                        {
+                            Toast
+                                .makeText(getContext(), "Something bad happened, please try again", Toast.LENGTH_SHORT)
+                                .show();
+                            break;
+                        }
+                }
+
+                showLoginScreen();
+            }
+        );
+    }
+
     private void showLoginScreen() {
+        if (cancelFlowButton != null) {
+            cancelFlowButton.setVisibility(View.GONE);
+        }
+
         binding.appLayout.setVisibility(View.VISIBLE);
         binding.appScreenLayoutContainer.setVisibility(View.GONE);
 
